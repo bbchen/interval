@@ -1,12 +1,13 @@
 #! /bin/sh
 set -eu
 
-rm -fr build
-mkdir -p build/release
+rm -fr build release
+mkdir build release
 
-xcodebuild clean build -scheme Timer -derivedDataPath build/private
+xcodebuild clean
+xcodebuild build
 
-mv build/private/Build/Products/Debug/Timer.app build/release/
+mv build/Release/Timer.app release
 
 commit=$(git log --format=%h HEAD -1)
-(cd build/release && zip -r Timer-${commit}.zip Timer.app)
+(cd release && zip -r Timer-${commit}.zip Timer.app)
