@@ -1,10 +1,10 @@
 import Cocoa
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
-    @IBOutlet weak var window: NSWindow!
     @IBOutlet weak var label: NSTextField!
+    @IBOutlet weak var lockScreenView: NSView!
 
     // Menu
     @IBOutlet weak var statusMenu: NSMenu!
@@ -13,6 +13,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let rootItem: NSStatusItem
     var timer: Timer!
     let pomodoroTimer: PomodoroTimer
+    var windows: [NSWindow]
 
     override init() {
         self.rootItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -21,6 +22,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         let fewMinutesAgo = Date.init().addingTimeInterval(-(60 * 24.5))
         pomodoroTimer.switchTo(PomodoroTimer.Stage.Work, since: fewMinutesAgo)
+        
+        self.windows = []
 
         super.init()
     }
@@ -47,11 +50,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func stopAction(_ sender: NSButton?) {
         stopTimer()
         updateMenu()
-        window!.setIsVisible(false)
+        
+        for w in windows {
+            w.setIsVisible(false)
+        }
         rootItem.attributedTitle = NSAttributedString.init(string: "")
     }
     
-    @IBAction func quitAction(_ sender: NSMenuItem) {
+    @IBAction func quitAction(_ sender: NSView) {
         let app = NSApplication.shared
         app.terminate(self)
     }
@@ -66,7 +72,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func update(timer: Timer) {
         let now = Date.init()
         let newStage = pomodoroTimer.update(date: now)
-        window!.setIsVisible(newStage != .Work)
+        
+        for w in windows {
+            w.setIsVisible(newStage != .Work)
+        }
         
         let seconds = pomodoroTimer.countDownTillNextStage(date: now)
         updateRootItem(seconds)
@@ -76,19 +85,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         resetTimer()
+        
+        createLockWindows()
 
         rootItem.title = ""
         rootItem.menu = statusMenu
         
-        window.level = NSWindow.Level.screenSaver
-        let screenSize = NSScreen.main!.frame.size
-
-        var frame = NSZeroRect
-        frame.origin = NSMakePoint(0, 0)
-        frame.size = NSMakeSize(screenSize.width, screenSize.height)
-        window.setFrame(frame, display: true, animate: false)
-
         updateMenu()
+    }
+    
+    
+    func createLockWindows() {
+        self.windows = NSScreen.screens.map({ (s: NSScreen) -> NSWindow in
+            let w = NSWindow.init(contentRect: NSMakeRect(0, 0, 200, 200),
+                                  styleMask: .borderless,
+                                  backing: .buffered,
+                                  defer: true,
+                                  screen: s)
+            w.level = NSWindow.Level.screenSaver
+            w.delegate = self
+            return w
+        })
+
+        // https://blogs.wcode.org/2015/06/howto-create-a-locked-down-fullscreen-cocoa-application-and-implement-nslayoutconstraints-using-swift/
+        for w in windows {
+            if w.screen == NSScreen.main {
+                if let view = lockScreenView {
+                    lockScreenView.autoresizingMask = [.width, .height]
+                    w.contentView?.addSubview(view)
+                    view.frame = w.frame
+                }
+            }
+            // w.contentView?.enterFullScreenMode(w.screen!, withOptions: nil)
+            w.makeKeyAndOrderFront(nil)
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
