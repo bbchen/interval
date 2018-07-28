@@ -116,7 +116,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                     view.frame = w.frame
                 }
             }
-            // w.contentView?.enterFullScreenMode(w.screen!, withOptions: nil)
+            w.contentView?.enterFullScreenMode(w.screen!, withOptions: nil)
             w.makeKeyAndOrderFront(nil)
         }
     }
