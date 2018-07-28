@@ -20,8 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         self.timer = nil
         self.pomodoroTimer = PomodoroTimer.init()
         
-        let fewMinutesAgo = Date.init().addingTimeInterval(-(60 * 24.5))
-        pomodoroTimer.switchTo(PomodoroTimer.Stage.Work, since: fewMinutesAgo)
+        pomodoroTimer.switchTo(PomodoroTimer.Stage.Work, duration: 5)
         
         self.windows = []
 
@@ -34,7 +33,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                                      selector: #selector(update(timer:)),
                                      userInfo: nil,
                                      repeats: true)
-        pomodoroTimer.switchTo(PomodoroTimer.Stage.Work, since: Date.init())
     }
 
     @IBAction func resetOrStopTimerAction(_ sender: NSMenuItem) {
@@ -69,12 +67,26 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
     
+    func lockScreen(window: NSWindow, lock: Bool) {
+        if lock {
+            if window.contentView?.isInFullScreenMode != true {
+                window.contentView?.enterFullScreenMode(window.screen!, withOptions: nil)
+            }
+            window.setIsVisible(true)
+        } else {
+            if window.contentView?.isInFullScreenMode == true {
+                window.contentView?.exitFullScreenMode(options: nil)
+            }
+            window.setIsVisible(false)
+        }
+    }
+    
     @objc func update(timer: Timer) {
         let now = Date.init()
         let newStage = pomodoroTimer.update(date: now)
         
         for w in windows {
-            w.setIsVisible(newStage != .Work)
+            lockScreen(window: w, lock: newStage != .Work)
         }
         
         let seconds = pomodoroTimer.countDownTillNextStage(date: now)
@@ -116,7 +128,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                     view.frame = w.frame
                 }
             }
-            w.contentView?.enterFullScreenMode(w.screen!, withOptions: nil)
             w.makeKeyAndOrderFront(nil)
         }
     }
