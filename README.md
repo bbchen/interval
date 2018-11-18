@@ -1,6 +1,6 @@
 # Pomodoro timer for macOS, written in Swift
 
-[![Build Status](https://travis-ci.org/kzys/timer.svg?branch=master)](https://travis-ci.org/kzys/timer)
+[![Build Status](https://travis-ci.org/kzys/interval.svg?branch=master)](https://travis-ci.org/kzys/interval)
 
 This is a yet another Pomodoro timmer app for macOS. The features are;
 
