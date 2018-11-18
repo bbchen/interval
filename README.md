@@ -4,8 +4,6 @@
 
 Interval is a Pomodoro Timer app for macOS, designed for software developers. Because [the world needs another][DAVELLA-2017] Pomodoro Timer.
 
-This is a yet another Pomodoro timmer app for macOS. The features are;
-
 ## Focus
 
 - No sound. The app blocks screen between breaks instead.
