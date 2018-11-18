@@ -4,6 +4,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     @IBOutlet weak var label: NSTextField!
+    @IBOutlet weak var quoteField: NSTextField!
     @IBOutlet weak var lockScreenView: NSView!
 
     // Menu
@@ -20,8 +21,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         self.timer = nil
         self.pomodoroTimer = PomodoroTimer.init()
         
-        pomodoroTimer.switchTo(PomodoroTimer.Stage.Work, duration: 5)
-        
+        // pomodoroTimer.switchTo(.Work, duration: 5)
+        pomodoroTimer.switchTo(.Work)
+
         self.windows = []
 
         super.init()
@@ -55,6 +57,26 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         rootItem.attributedTitle = NSAttributedString.init(string: "")
     }
     
+    @IBAction func startAction(_ sender: NSView) {
+        for w in windows {
+            lockScreen(window: w, lock: false)
+        }
+        pomodoroTimer.switchTo(.Work)
+        resetTimer()
+    }
+    
+    @IBAction func pauseAction(_ sender: NSView) {
+        for w in windows {
+            lockScreen(window: w, lock: false)
+        }
+        pomodoroTimer.switchTo(.Work)
+
+        let seconds = pomodoroTimer.countDownTillNextStage(date: Date.init())
+        updateRootItem(seconds)
+
+        stopTimer()
+    }
+    
     @IBAction func quitAction(_ sender: NSView) {
         let app = NSApplication.shared
         app.terminate(self)
@@ -83,8 +105,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     
     @objc func update(timer: Timer) {
         let now = Date.init()
+
+        let oldStage = pomodoroTimer.stage
         let newStage = pomodoroTimer.update(date: now)
         
+        if oldStage != newStage {
+            if newStage == .Work {
+                stopTimer()
+                return
+            } else {
+                quoteField.stringValue = ""
+            }
+        }
+
         for w in windows {
             lockScreen(window: w, lock: newStage != .Work)
         }
@@ -142,7 +175,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         
         if let button = rootItem.button {
             var p = 0.0
-            if timer.isValid {
+            if timer != nil && timer.isValid {
                 p = Double(seconds) / (pomodoroTimer.stage.rawValue * 60.0)
             }
             let image = Helper.makeClockImage(height: 18, progress: p)

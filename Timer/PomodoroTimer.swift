@@ -24,6 +24,7 @@ class PomodoroTimer {
     
     func switchTo(_ stage: Stage) {
         self.stage = stage
+        self.since = Date.init()
         self.secondsTillNextStage = stage.rawValue * 60.0
     }
     
@@ -48,6 +49,6 @@ class PomodoroTimer {
     
     func countDownTillNextStage(date: Date) -> Int {
         let interval = date.timeIntervalSince(since)
-        return Int(floor(secondsTillNextStage - interval))
+        return Int(ceil(secondsTillNextStage - interval))
     }
 }
