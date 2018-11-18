@@ -1,5 +1,5 @@
 import XCTest
-@testable import Timer
+@testable import Interval
 
 class AppDelegateTests: XCTestCase {
     func testInit() {
