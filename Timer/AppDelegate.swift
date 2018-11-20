@@ -29,7 +29,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         super.init()
     }
     
-    func resetTimer() {
+    func startTimer() {
+        if timer != nil {
+            timer.invalidate()
+        }
         timer = Timer.scheduledTimer(timeInterval: 0.1,
                                      target: self,
                                      selector: #selector(update(timer:)),
@@ -37,17 +40,25 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                                      repeats: true)
     }
 
-    @IBAction func resetOrStopTimerAction(_ sender: NSMenuItem) {
-        if timer != nil && timer.isValid {
-            stopAction(nil)
-        } else {
-            resetTimer()
+    func stopTimer() {
+        if timer != nil {
+            timer.invalidate()
+            timer = nil
         }
-        
-        updateMenu()
     }
 
-    @IBAction func stopAction(_ sender: NSButton?) {
+    @IBAction func backToWorkAction(_ sender: NSObject) {
+        for w in windows {
+            w.setIsVisible(false)
+        }
+
+        pomodoroTimer.switchTo(.Work)
+
+        updateMenu()
+        rootItem.attributedTitle = NSAttributedString.init(string: "")
+    }
+    
+    @IBAction func stopAction(_ sender: NSObject) {
         stopTimer()
         updateMenu()
         
@@ -57,36 +68,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         rootItem.attributedTitle = NSAttributedString.init(string: "")
     }
     
-    @IBAction func startAction(_ sender: NSView) {
+    @IBAction func startAction(_ sender: NSObject) {
         for w in windows {
             lockScreen(window: w, lock: false)
         }
-        pomodoroTimer.switchTo(.Work)
-        resetTimer()
+        // pomodoroTimer.switchTo(.Work)
+        
+        pomodoroTimer.resume()
+        startTimer()
     }
     
-    @IBAction func pauseAction(_ sender: NSView) {
+    @IBAction func resumeAction(_ sender: NSObject) {
         for w in windows {
             lockScreen(window: w, lock: false)
         }
-        pomodoroTimer.switchTo(.Work)
-
-        let seconds = pomodoroTimer.countDownTillNextStage(date: Date.init())
-        updateRootItem(seconds)
-
+        pomodoroTimer.resume()
+        startTimer()
+    }
+    
+    @IBAction func pauseAction(_ sender: NSObject) {
+        for w in windows {
+            lockScreen(window: w, lock: false)
+        }
+        pomodoroTimer.pause()
         stopTimer()
     }
     
     @IBAction func quitAction(_ sender: NSView) {
         let app = NSApplication.shared
         app.terminate(self)
-    }
-
-    func stopTimer() {
-        if timer != nil {
-            timer.invalidate()
-            timer = nil
-        }
     }
     
     func lockScreen(window: NSWindow, lock: Bool) {
@@ -106,30 +116,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @objc func update(timer: Timer) {
         let now = Date.init()
 
-        let oldStage = pomodoroTimer.stage
         let newStage = pomodoroTimer.update(date: now)
-        
-        if oldStage != newStage {
-            if newStage == .Work {
-                stopTimer()
-                return
-            } else {
-                quoteField.stringValue = ""
-            }
-        }
-
         for w in windows {
             lockScreen(window: w, lock: newStage != .Work)
         }
         
-        let seconds = pomodoroTimer.countDownTillNextStage(date: now)
+        let seconds = Int(pomodoroTimer.countDownTillNextStage(date: now))
         updateRootItem(seconds)
         
         label.stringValue = String.init(format: "%02d:%02d", seconds / 60, seconds % 60)
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        resetTimer()
+        startTimer()
         
         createLockWindows()
 
@@ -185,11 +184,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
     
     func updateMenu() {
-        if timer != nil && timer.isValid {
-            resetOrStopItem.title = "Stop Pomodoro"
-        } else {
-            resetOrStopItem.title = "Start Pomodoro"
-        }
     }
 }
 

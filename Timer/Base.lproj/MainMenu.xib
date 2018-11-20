@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -12,12 +13,11 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Timer" customModuleProvider="target">
+        <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Interval" customModuleProvider="target">
             <connections>
                 <outlet property="label" destination="4ug-hP-4mT" id="N5r-iU-WYh"/>
                 <outlet property="lockScreenView" destination="aot-RT-Jc1" id="agF-pT-Czk"/>
                 <outlet property="quoteField" destination="Lk3-a5-6qJ" id="TIS-vg-ZeN"/>
-                <outlet property="resetOrStopItem" destination="p49-Su-aNM" id="uNb-Qg-CAH"/>
                 <outlet property="statusMenu" destination="kTU-Mf-8eF" id="fNd-Et-xqp"/>
             </connections>
         </customObject>
@@ -40,10 +40,28 @@
         </window>
         <menu id="kTU-Mf-8eF">
             <items>
-                <menuItem title="Start/Stop Pomodoro" id="p49-Su-aNM">
+                <menuItem title="Start" id="01U-Du-Hlw">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
-                        <action selector="resetOrStopTimerAction:" target="Voe-Tx-rLC" id="tff-M0-q0Q"/>
+                        <action selector="startAction:" target="Voe-Tx-rLC" id="1oD-jh-Lbp"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Pause" id="iW7-37-KUm">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="pauseAction:" target="Voe-Tx-rLC" id="9Ai-fF-JOM"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Resume" id="p49-Su-aNM">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="resumeAction:" target="Voe-Tx-rLC" id="loI-Wb-rWU"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Stop" id="Mm3-PY-uyf">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="stopAction:" target="Voe-Tx-rLC" id="JMe-SE-Cph"/>
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="6rZ-Xx-FDx"/>
@@ -56,23 +74,15 @@
             </items>
             <point key="canvasLocation" x="140" y="-137"/>
         </menu>
-        <customView wantsLayer="YES" misplaced="YES" id="aot-RT-Jc1">
-            <rect key="frame" x="0.0" y="0.0" width="744" height="200"/>
+        <customView wantsLayer="YES" id="aot-RT-Jc1">
+            <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <visualEffectView blendingMode="behindWindow" material="mediumLight" state="active" translatesAutoresizingMaskIntoConstraints="NO" id="VYo-T0-lqK">
-                    <rect key="frame" x="0.0" y="0.0" width="744" height="200"/>
+                    <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                     <subviews>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4ug-hP-4mT">
-                            <rect key="frame" x="-2" y="150" width="748" height="30"/>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="01:23" id="TEX-7T-7gT">
-                                <font key="font" size="20" name="Menlo-Regular"/>
-                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
                         <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="20" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tJR-3t-G37">
-                            <rect key="frame" x="264" y="20" width="217" height="21"/>
+                            <rect key="frame" x="189" y="20" width="423" height="21"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VgK-qd-WLa">
                                     <rect key="frame" x="-6" y="-7" width="70" height="32"/>
@@ -94,8 +104,28 @@
                                         <action selector="pauseAction:" target="Voe-Tx-rLC" id="Vnh-YE-V7S"/>
                                     </connections>
                                 </button>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bTB-Y0-PR6">
+                                    <rect key="frame" x="157" y="-7" width="121" height="32"/>
+                                    <buttonCell key="cell" type="push" title="Back to Work" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="LvY-4b-2cs">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="backToWorkAction:" target="Voe-Tx-rLC" id="7sO-GS-TAY"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ibl-vV-cMs">
+                                    <rect key="frame" x="286" y="-7" width="69" height="32"/>
+                                    <buttonCell key="cell" type="push" title="Stop" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ADC-7K-6QZ">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="stopAction:" target="Voe-Tx-rLC" id="POB-ZB-Gs1"/>
+                                    </connections>
+                                </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="THz-hh-Eqa">
-                                    <rect key="frame" x="157" y="-7" width="66" height="32"/>
+                                    <rect key="frame" x="363" y="-7" width="66" height="32"/>
                                     <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="0Wq-xM-SG4">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -109,18 +139,30 @@
                                 <integer value="1000"/>
                                 <integer value="1000"/>
                                 <integer value="1000"/>
+                                <integer value="1000"/>
+                                <integer value="1000"/>
                             </visibilityPriorities>
                             <customSpacing>
+                                <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>
                                 <real value="3.4028234663852886e+38"/>
                             </customSpacing>
                         </stackView>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Lk3-a5-6qJ">
-                            <rect key="frame" x="198" y="88" width="348" height="24"/>
+                            <rect key="frame" x="198" y="288" width="404" height="24"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="a quick brown fox jumps over the lazy dog" id="wOe-Tf-FQp">
                                 <font key="font" size="20" name="Times-Roman"/>
                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4ug-hP-4mT">
+                            <rect key="frame" x="-2" y="440" width="804" height="80"/>
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="01:23" id="TEX-7T-7gT">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
@@ -130,7 +172,7 @@
                         <constraint firstItem="Lk3-a5-6qJ" firstAttribute="leading" secondItem="VYo-T0-lqK" secondAttribute="leading" constant="200" id="2Ac-ru-MB2"/>
                         <constraint firstItem="4ug-hP-4mT" firstAttribute="width" secondItem="VYo-T0-lqK" secondAttribute="width" id="F58-hP-tB9"/>
                         <constraint firstItem="4ug-hP-4mT" firstAttribute="centerX" secondItem="tJR-3t-G37" secondAttribute="centerX" id="a4D-GO-iSq"/>
-                        <constraint firstItem="4ug-hP-4mT" firstAttribute="top" secondItem="VYo-T0-lqK" secondAttribute="top" constant="20" id="d0M-AB-uwl"/>
+                        <constraint firstItem="4ug-hP-4mT" firstAttribute="top" secondItem="VYo-T0-lqK" secondAttribute="top" constant="40" id="d0M-AB-uwl"/>
                         <constraint firstItem="tJR-3t-G37" firstAttribute="centerX" secondItem="VYo-T0-lqK" secondAttribute="centerX" id="jKB-2N-RdW"/>
                         <constraint firstAttribute="trailing" secondItem="Lk3-a5-6qJ" secondAttribute="trailing" constant="200" id="nNw-ur-6V3"/>
                         <constraint firstAttribute="bottom" secondItem="tJR-3t-G37" secondAttribute="bottom" constant="20" id="qnY-5I-NnL"/>
