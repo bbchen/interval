@@ -4,8 +4,8 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     @IBOutlet weak var label: NSTextField!
-    @IBOutlet weak var quoteField: NSTextField!
     @IBOutlet weak var lockScreenView: NSView!
+    @IBOutlet weak var imageView: NSImageView!
 
     // Menu
     @IBOutlet weak var statusMenu: NSMenu!
@@ -132,7 +132,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let seconds = Int(pomodoroTimer.countDownTillNextStage(date: now))
         updateRootItem(seconds)
         
-        label.stringValue = String.init(format: "%02d:%02d", seconds / 60, seconds % 60)
+        updateLockScreen()
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -176,9 +176,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         // Insert code here to tear down your application
     }
 
+    func updateLockScreen() {
+        let seconds = Int(pomodoroTimer.remaining)
+        label.attributedStringValue = Helper.monospaceDigitString(String.init(format: "%02d:%02d", seconds / 60, seconds % 60), size: 32.0)
+
+        var p = 0.0
+        if timer != nil && timer.isValid {
+            p = pomodoroTimer.progress()
+        }
+        let image = Helper.makeClockImage(height: 48.0, progress: p)
+        imageView.image = image
+    }
+
     func updateRootItem(_ seconds: Int) {
         let title = String.init(format: "%02d:%02d", seconds / 60, seconds % 60)
-        rootItem.attributedTitle = Helper.monospaceMenuTitle(title)
+        rootItem.attributedTitle = Helper.monospaceDigitStringForMenuBar(title)
         
         if let button = rootItem.button {
             var p = 0.0
@@ -190,7 +202,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             button.alternateImage = image
         }
     }
-    
+
     func updateMenu() {
     }
 }

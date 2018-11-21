@@ -10,9 +10,13 @@ extension NSImage {
 
 class Helper {
     // https://blog.usejournal.com/proportional-vs-monospaced-numbers-when-to-use-which-one-in-order-to-avoid-wiggling-labels-e31b1c83e4d0
-    static func monospaceMenuTitle(_ title: String) -> NSAttributedString {
+    static func monospaceDigitStringForMenuBar(_ title: String) -> NSAttributedString {
+        return monospaceDigitString(title, size: NSFont.systemFontSize)
+    }
+    
+    static func monospaceDigitString(_ title: String, size: CGFloat) -> NSAttributedString {
         let str = NSMutableAttributedString.init(string: title)
-        let monospaceFont = NSFont.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: NSFont.Weight.medium)
+        let monospaceFont = NSFont.monospacedDigitSystemFont(ofSize: size, weight: NSFont.Weight.medium)
         str.setAttributes([NSAttributedStringKey.font: monospaceFont as Any], range: NSMakeRange(0, str.length))
         return str
     }
