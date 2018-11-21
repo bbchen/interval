@@ -49,10 +49,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     @IBAction func backToWorkAction(_ sender: NSObject) {
         for w in windows {
-            w.setIsVisible(false)
+            lockScreen(window: w, lock: false)
         }
 
         pomodoroTimer.switchTo(.Work)
+        startTimer()
 
         updateMenu()
         rootItem.attributedTitle = NSAttributedString.init(string: "")
@@ -116,7 +117,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     @objc func update(timer: Timer) {
         let now = Date.init()
 
+        let oldStage = pomodoroTimer.stage
         let newStage = pomodoroTimer.update(date: now)
+        
+        if oldStage != newStage && newStage == .Work {
+            stopTimer()
+            return
+        }
+        
         for w in windows {
             lockScreen(window: w, lock: newStage != .Work)
         }
