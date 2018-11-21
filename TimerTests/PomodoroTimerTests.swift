@@ -14,6 +14,7 @@ class PomodoroTimerTests: XCTestCase {
     func testInit() {
         let timer = PomodoroTimer.init()
         XCTAssertEqual(timer.stage, PomodoroTimer.Stage.Work)
+        XCTAssertEqual(timer.progress(), 1.0)
     }
 
     func testPauseResume() {
