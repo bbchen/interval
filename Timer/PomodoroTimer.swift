@@ -34,11 +34,6 @@ class PomodoroTimer {
         self.since = Date.init()
     }
     
-    func switchTo(_ stage: Stage, duration: Double) {
-        self.stage = stage
-        self.remaining = self.config[stage]!
-    }
-    
     func switchTo(_ stage: Stage) {
         self.stage = stage
         self.since = Date.init()
