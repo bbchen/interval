@@ -5,7 +5,7 @@ class PomodoroTimer {
         case Work, ShortBreak, LongBreak
     }
     static let PROD: Dictionary<Stage, TimeInterval> = [.Work: 25.0 * 60, .ShortBreak: 5.0 * 60, .LongBreak: 15.0 * 60]
-    static let DEV: Dictionary<Stage, TimeInterval> = [.Work: 30, .ShortBreak: 10, .LongBreak: 20]
+    static let DEV: Dictionary<Stage, TimeInterval> = [.Work: 10, .ShortBreak: 5, .LongBreak: 10]
     
     private(set) var since: Date?
     private(set) var stage: Stage
