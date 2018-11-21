@@ -1,6 +1,7 @@
 # Interval
 
 [![Build Status](https://travis-ci.org/kzys/interval.svg?branch=master)](https://travis-ci.org/kzys/interval)
+[![codecov](https://codecov.io/gh/kzys/interval/branch/master/graph/badge.svg)](https://codecov.io/gh/kzys/interval)
 
 Interval is a Pomodoro Timer app for macOS, designed for software developers. Because [the world needs another][DAVELLA-2017] Pomodoro Timer.
 
