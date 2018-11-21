@@ -21,7 +21,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         self.timer = nil
         self.pomodoroTimer = PomodoroTimer.init(config: PomodoroTimer.DEV)
         
-        // pomodoroTimer.switchTo(.Work, duration: 5)
         pomodoroTimer.switchTo(.Work)
 
         self.windows = []
