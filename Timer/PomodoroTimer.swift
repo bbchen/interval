@@ -64,8 +64,4 @@ class PomodoroTimer {
     func progress() -> Double {
         return remaining / config[stage]!
     }
-    
-    func countDownTillNextStage(date: Date) -> TimeInterval {
-        return self.remaining
-    }
 }

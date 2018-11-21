@@ -128,8 +128,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             lockScreen(window: w, lock: newStage != .Work)
         }
         
-        let seconds = Int(pomodoroTimer.countDownTillNextStage(date: now))
-        updateRootItem(seconds)
+        updateRootItem(Int(pomodoroTimer.remaining))
         
         updateLockScreen()
     }
