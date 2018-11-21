@@ -14,6 +14,10 @@ class PomodoroTimer {
     
     private var config: Dictionary<Stage, TimeInterval>
     
+    convenience init() {
+        self.init(config: PomodoroTimer.PROD)
+    }
+    
     init(config: Dictionary<Stage, TimeInterval>) {
         self.config = config
         since = Date.init()
