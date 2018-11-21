@@ -6,7 +6,7 @@ class PomodoroTimerTests: XCTestCase {
     override func setUp() {
         super.setUp()
     }
-    
+
     override func tearDown() {
         super.tearDown()
     }
@@ -14,6 +14,12 @@ class PomodoroTimerTests: XCTestCase {
     func testInit() {
         let timer = PomodoroTimer.init()
         XCTAssertEqual(timer.stage, PomodoroTimer.Stage.Work)
+    }
+
+    func testPauseResume() {
+        let timer = PomodoroTimer.init()
+        timer.pause()
+        timer.resume()
     }
 
     func testUpdateWithoutStageChange() {
