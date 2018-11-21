@@ -19,7 +19,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     override init() {
         self.rootItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         self.timer = nil
-        self.pomodoroTimer = PomodoroTimer.init(config: PomodoroTimer.DEV)
+        self.pomodoroTimer = PomodoroTimer.init(config: PomodoroTimer.PROD)
         
         pomodoroTimer.switchTo(.Work)
 
