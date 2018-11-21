@@ -19,7 +19,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     override init() {
         self.rootItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         self.timer = nil
-        self.pomodoroTimer = PomodoroTimer.init()
+        self.pomodoroTimer = PomodoroTimer.init(config: PomodoroTimer.DEV)
         
         // pomodoroTimer.switchTo(.Work, duration: 5)
         pomodoroTimer.switchTo(.Work)
@@ -175,7 +175,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         if let button = rootItem.button {
             var p = 0.0
             if timer != nil && timer.isValid {
-                p = Double(seconds) / (pomodoroTimer.stage.rawValue * 60.0)
+                p = pomodoroTimer.progress()
             }
             let image = Helper.makeClockImage(height: 18, progress: p)
             button.image = image

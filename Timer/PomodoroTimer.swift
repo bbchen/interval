@@ -2,20 +2,23 @@ import Foundation
 
 class PomodoroTimer {
     enum Stage: TimeInterval {
-        case Work = 25.0, ShortBreak = 5.0, LongBreak = 15.0
+        case Work, ShortBreak, LongBreak
     }
-
+    static let PROD: Dictionary<Stage, TimeInterval> = [.Work: 25.0 * 60, .ShortBreak: 5.0 * 60, .LongBreak: 15.0 * 60]
+    static let DEV: Dictionary<Stage, TimeInterval> = [.Work: 30, .ShortBreak: 10, .LongBreak: 20]
+    
     private(set) var since: Date?
-    private var secondsTillNextStage: Double
     private(set) var stage: Stage
     private(set) var workCount: Int
     private(set) var remaining: TimeInterval
     
-    init() {
+    private var config: Dictionary<Stage, TimeInterval>
+    
+    init(config: Dictionary<Stage, TimeInterval>) {
+        self.config = config
         since = Date.init()
         stage = .Work
-        secondsTillNextStage = stage.rawValue * 60.0
-        remaining = 0
+        remaining = self.config[stage]!
         workCount = 0
     }
     
@@ -29,15 +32,13 @@ class PomodoroTimer {
     
     func switchTo(_ stage: Stage, duration: Double) {
         self.stage = stage
-        self.secondsTillNextStage = duration
-        self.remaining = stage.rawValue * 60.0
+        self.remaining = self.config[stage]!
     }
     
     func switchTo(_ stage: Stage) {
         self.stage = stage
         self.since = Date.init()
-        self.remaining = stage.rawValue * 60.0
-        self.secondsTillNextStage = stage.rawValue * 60.0
+        self.remaining = self.config[stage]!
     }
     
     func update(date: Date) -> Stage {
@@ -59,6 +60,10 @@ class PomodoroTimer {
             }
         }
         return stage
+    }
+    
+    func progress() -> Double {
+        return remaining / config[stage]!
     }
     
     func countDownTillNextStage(date: Date) -> TimeInterval {
