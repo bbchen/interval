@@ -9,3 +9,5 @@ after_success:
 # https://docs.travis-ci.com/user/uploading-artifacts/
 addons:
   artifacts: true
+    paths:
+      - ./build
