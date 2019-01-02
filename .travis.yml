@@ -7,5 +7,5 @@ after_success:
 
 # Use addon: instead of deploy:
 # https://docs.travis-ci.com/user/uploading-artifacts/
-addon:
+addons:
   artifacts: true
