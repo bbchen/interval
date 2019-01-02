@@ -4,9 +4,8 @@ script:
 - ./travis.sh
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-deploy:
-  provider: s3
-  bucket: snapshot.eight
-  acl: public_read
-  skip_cleanup: true
 
+# Use addon: instead of deploy:
+# https://docs.travis-ci.com/user/uploading-artifacts/
+addon:
+  artifacts: true
