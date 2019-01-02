@@ -15,6 +15,10 @@ Interval is a Pomodoro Timer app for macOS, designed for software developers. Be
 
 The MIT License
 
+## Build
+
+Travis CI
+
 ## Thanks
 
 - [JustFocus][JUSTFOCUS]: I was using this app before writing my own. Many features are inspired by the app.
