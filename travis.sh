@@ -8,7 +8,8 @@ bin=$(find $HOME/Library/Developer/Xcode/DerivedData -name 'Interval')
 
 commit=$(git log --format=%h HEAD -1)
 
-app_dir=$(find $HOME/Library/Developer/Xcode/DerivedData -name 'Interval.app')
 mkdir build
-cp -r $app_dir build/
-(cd build && zip -r Interval-${commit}.zip Interval.app)
+build_dir=$PWD/build
+
+app_dir=$(find $HOME/Library/Developer/Xcode/DerivedData -name 'Interval.app')
+(cd $app_dir/.. && zip -r "$build_dir/Interval-$commit.zip" Interval.app)
